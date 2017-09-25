@@ -1,29 +1,30 @@
 FROM ubuntu
+MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
+LABEL Description="Fluent Bit Docker image" Vendor="Samsung CNCT" Version="0.1"
+
 ENV DEBIAN_FRONTEND noninteractive
 
-# Fluent Bit version
 ENV FLB_MAJOR 0
 ENV FLB_MINOR 12
-ENV FLB_PATCH 2
-ENV FLB_VERSION 0.12.2
+ENV FLB_PATCH 3
+ENV FLB_VERSION 0.12.3
+
 ENV GOPATH /go
 ENV GOBIN $GOPATH/bin
 ENV PATH $GOBIN:$PATH
 
-MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
-LABEL Description="Fluent Bit docker image" Vendor="Fluent Organization" Version="0.1"
 USER root
 
-# Install build tools
 RUN apt-get -qq update && \
     apt-get install -y -qq curl ca-certificates build-essential cmake iputils-ping dnsutils make bash sudo wget unzip libsystemd-dev nano vim valgrind golang git  && \
-    apt-get install -y -qq --reinstall lsb-base lsb-release && \  
+    apt-get install -y -qq --reinstall lsb-base lsb-release && \
     wget -O "/tmp/fluent-bit-$FLB_VERSION-dev.zip" "https://github.com/fluent/fluent-bit/archive/v$FLB_VERSION.zip" && \
     cd /tmp && \
     unzip "fluent-bit-$FLB_VERSION-dev.zip" && \
     cd "fluent-bit-$FLB_VERSION/build/" && \
     cmake -DCMAKE_INSTALL_PREFIX=/fluent-bit/ .. && \
-    make && make install && \
+    make && \
+    make install && \
     cd / && \
     git clone https://github.com/samsung-cnct/fluent-bit-kafka-output-plugin && \
     cd fluent-bit-kafka-output-plugin && \
