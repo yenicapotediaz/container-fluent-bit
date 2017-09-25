@@ -1,7 +1,7 @@
-FROM ubuntu
-ENV DEBIAN_FRONTEND noninteractive
+FROM golang:1.9.0 as builder
+MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
+LABEL Description="Fluent Bit Docker image" Vendor="Samsung CNCT" Version="0.1"
 
-# Fluent Bit version
 ENV FLB_MAJOR 0
 ENV FLB_MINOR 12
 ENV FLB_PATCH 2
@@ -10,8 +10,6 @@ ENV GOPATH /go
 ENV GOBIN $GOPATH/bin
 ENV PATH $GOBIN:$PATH
 
-MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
-LABEL Description="Fluent Bit docker image" Vendor="Fluent Organization" Version="0.1"
 USER root
 
 # Install build tools
@@ -29,6 +27,8 @@ RUN apt-get -qq update && \
     cd fluent-bit-kafka-output-plugin && \
     make && \
     rm -rf /tmp/* /fluent-bit/include /fluent-bit/lib*
+
+FROM golang:alpine as runtime
 
 COPY fluent-bit.conf /fluent-bit/etc/
 COPY parsers.conf /fluent-bit/etc/
