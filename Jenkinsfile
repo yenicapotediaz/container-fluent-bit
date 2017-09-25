@@ -29,7 +29,7 @@ podTemplate(label: "${project_name}", containers: [
         }
 
         stage('Test') {
-          kubesh "docker run --rm quay.io/samsung_cnct/fluent-bit ls /fluent-bit/bin/fluent-bit"
+          kubesh "docker run --rm ${project_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} ls /fluent-bit/bin/fluent-bit"
         }
 
         // only push from master.   check that we are on samsung-cnct fork
