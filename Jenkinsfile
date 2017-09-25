@@ -29,7 +29,7 @@ podTemplate(label: "${project_name}", containers: [
         }
 
         stage('Test') {
-          kubesh "do stuff/re-write a local configuration file to reference the newly built docker image"
+          kubesh "docker run --rm quay.io/samsung_cnct/fluent-bit ls /fluent-bit/bin/fluent-bit"
         }
 
         // only push from master.   check that we are on samsung-cnct fork
