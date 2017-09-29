@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:16.04
 MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
 LABEL Description="Fluent Bit Docker image" Vendor="Samsung CNCT" Version="0.1"
 
