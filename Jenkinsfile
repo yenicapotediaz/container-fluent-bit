@@ -1,19 +1,30 @@
-// Configuration variables
-github_org             = "samsung-cnct"
-quay_org               = "samsung_cnct"
-publish_branch         = "master"
-image_tag              = "${env.RELEASE_VERSION}" != "null" ? "${env.RELEASE_VERSION}" : "latest"
-project_name           = "container-fluent-bit"
+/*
+   This Jenkinsfile builds and tests containers, and pushes tagged versions to a container registry.
+ */
+def github_org         = "samsung-cnct"
+def publish_branch     = "master"
+def registry           = "quay.io"
+def registry_user      = "samsung_cnct"
+def robot_secret       = "quay-robot-fluent-bit-container-rw"
+def image_name         = "fluent-bit-container"
+def image_tag          = "${env.RELEASE_VERSION}" != "null" ? "${env.RELEASE_VERSION}" : "latest"
 
-podTemplate(label: "${project_name}", containers: [
-    containerTemplate(name: 'jnlp', image: "quay.io/${quay_org}/custom-jnlp:0.1", args: '${computer.jnlpmac} ${computer.name}'),
-    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
-  ], volumes: [
-    hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
-    hostPathVolume(hostPath: '/var/lib/docker/scratch', mountPath: '/mnt/scratch'),
-    secretVolume(mountPath: '/home/jenkins/.docker/', secretName: 'samsung-cnct-quay-robot-fluent-bit-dockercfg')
-  ]) {
-    node("${project_name}") {
+podTemplate(label: "${image_name}", containers: [
+    containerTemplate(name: 'jnlp',
+                      image: "${registry}/${registry_user}/custom-jnlp:0.1",
+                      args: '${computer.jnlpmac} ${computer.name}'),
+    containerTemplate(name: 'docker',
+                      image: 'docker:17.09.0-ce-git',
+                      command: 'cat',
+                      ttyEnabled: true),
+    ], volumes: [
+        hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+        hostPathVolume(hostPath: '/var/lib/docker/scratch', mountPath: '/mnt/scratch'),
+    ], envVars: [
+        secretEnvVar(key: 'USERNAME', secretName: robot_secret, secretKey: 'username'),
+        secretEnvVar(key: 'PASSWORD', secretName: robot_secret, secretKey: 'password')])
+    {
+    node("${image_name}") {
       customContainer('docker') {
         // add a docker rmi/docker purge/etc.
         stage('Checkout') {
@@ -25,18 +36,19 @@ podTemplate(label: "${project_name}", containers: [
         }
         // build new version of kraken-tools image on 'docker' container
         stage('Build') {
-          kubesh "docker build -t ${project_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} ."
+          kubesh "docker build -t ${image_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} ."
         }
 
         stage('Test') {
-          kubesh "docker run --rm ${project_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} ls /fluent-bit/bin/fluent-bit"
+          kubesh "echo The test stage is empty"
         }
 
         // only push from master.   check that we are on samsung-cnct fork
         stage('Publish') {
           if (git_branch.contains(publish_branch) && git_uri.contains(github_org)) {
-            kubesh "docker tag ${project_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} quay.io/${quay_org}/${project_name}:${image_tag}"
-            kubesh "docker push quay.io/${quay_org}/${project_name}:${image_tag}"
+            kubesh "docker login ${registry} -u ${USERNAME} -p ${PASSWORD}"
+            kubesh "docker tag ${image_name}:${env.JOB_BASE_NAME}.${env.BUILD_ID} ${registry}/${registry_user}/${image_name}:${image_tag}"
+            kubesh "docker push ${registry}/${registry_user}/${image_name}:${image_tag}"
           } else {
             echo "Not pushing to docker repo:\n    BRANCH_NAME='${env.BRANCH_NAME}'\n    GIT_BRANCH='${git_branch}'\n    git_uri='${git_uri}'"
           }
