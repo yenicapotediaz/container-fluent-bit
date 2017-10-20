@@ -5,4 +5,4 @@ The [container-fluent-bit](https://github.com/samsung-cnct/container-fluent-bit)
 
 This container is used by the [chart-fluent-bit](https://github.com/samsung-cnct/chart-fluent-bit) repo, and is used as part of [chart-logging](https://github.com/samsung-cnct/chart-logging) logging solution. See the [chart repo](https://github.com/samsung-cnct/chart-fluent-bit) for information on installing and configuring Fluent Bit on Kubernetes. The [fluent-bit.conf](https://github.com/samsung-cnct/container-fluent-bit/blob/master/fluent-bit.conf) included with the container artifact is intended for debugging only.
 
-Deployments to Kubernetes should use a [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configmap/). For an example, from the chart repo, see [fluent-bit.yaml](https://github.com/samsung-cnct/chart-fluent-bit/tree/master/fluent-bit/templates).
+Deployments to Kubernetes should use a [ConfigMap](https://kubernetes.io/docs/tasks/configure-pod-container/configmap/).
