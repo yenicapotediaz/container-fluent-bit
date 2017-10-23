@@ -1,0 +1,42 @@
+image: docker:latest
+
+before_script:
+  - docker info
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+
+
+variables:
+  FAILFASTCI_NAMESPACE: joejulian-robot1
+  registry: quay.io
+  registry_user: joejulian
+  chart_name: nginx-ingress
+  robot_account: nginx_ingress
+  helm_registry_image: quay.io/samsung_cnct/helm-registry-agent
+  helm_registry_version: v0.1.5
+
+stages:
+  - build
+  - test
+  - publish
+
+
+build_chart:
+  stage: build
+  script:
+    - build/build.sh
+
+build_foo:
+  stage: build
+  script:
+    - echo "I'm a little teapot"
+
+
+helm_test:
+  stage: test
+  script:
+    - build/test.sh
+
+helm_publish:
+  stage: publish
+  script:
+    - cd ${chart_name} && helm registry push ${registry}/${registry_user}/${chart_name} -c alpha
