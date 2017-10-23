@@ -1,18 +1,23 @@
-image: docker:latest
+image: $image_repo/$image_repo_org/$repo_name:$image_version_tag
+
+services:
+  - docker:dind
 
 before_script:
   - docker info
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY #what are these? where do they come from?
+
 
 
 variables:
-  FAILFASTCI_NAMESPACE: joejulian-robot1
-  registry: quay.io
-  registry_user: joejulian
-  chart_name: nginx-ingress
-  robot_account: nginx_ingress
-  helm_registry_image: quay.io/samsung_cnct/helm-registry-agent
-  helm_registry_version: v0.1.5
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+  image_repo: quay.io
+  image_repo_org: samsung-cnct
+  repo_name: fluent-bit-container
+  robot_account: *******************noidea********* #do I need that for a quay container image?
+  image_version_tag: latest #for now, or what?
+
 
 stages:
   - build
@@ -20,23 +25,27 @@ stages:
   - publish
 
 
-build_chart:
+build:
   stage: build
   script:
-    - build/build.sh
+    - docker build --force-rm --pull -t $IMAGE_DEVL_NAME
+    - docker push $IMAGE_DEVL_NAME
 
-build_foo:
+build_unicorns:
   stage: build
   script:
-    - echo "I'm a little teapot"
+    - echo "The unicorn is the national animal of Scotland."
 
-
-helm_test:
+test:
   stage: test
   script:
-    - build/test.sh
+    - docker pull $IMAGE_DEVL_NAME
+    - docker run $IMAGE_DEVL_NAME make test cover # does "make", "test" and "cover" actually mean anything? DROP AND COVER
 
-helm_publish:
+
+publish:
   stage: publish
   script:
-    - cd ${chart_name} && helm registry push ${registry}/${registry_user}/${chart_name} -c alpha
+    - docker pull $IMAGE_DEVL_NAME
+    - docker tag $IMAGE_DEVL_NAME $IMAGE_PROD_NAME
+    - docker push $IMAGE_PROD_NAME
