@@ -15,8 +15,19 @@ ENV PATH $GOBIN:$PATH
 
 USER root
 
-RUN apt-get -qq update && \
-    apt-get install -y -qq curl ca-certificates build-essential cmake iputils-ping dnsutils make bash sudo wget unzip libsystemd-dev nano vim valgrind golang git  && \
+RUN buildDeps='build-essential \
+        cmake \
+        curl \
+        dnsutils \
+        git \
+        iputils-ping \
+        libsystemd-dev \
+        make \
+        unzip \
+        valgrind \
+        wget' && \
+    apt-get -qq update && \
+    apt-get install -y -qq $buildDeps ca-certificates golang sudo --no-install-recommends && \
     apt-get install -y -qq --reinstall lsb-base lsb-release && \
     wget -O "/tmp/fluent-bit-$FLB_VERSION-dev.zip" "https://github.com/fluent/fluent-bit/archive/v$FLB_VERSION.zip" && \
     cd /tmp && \
@@ -29,11 +40,10 @@ RUN apt-get -qq update && \
     git clone https://github.com/samsung-cnct/fluent-bit-kafka-output-plugin && \
     cd fluent-bit-kafka-output-plugin && \
     make && \
+    apt-get remove --purge --auto-remove -y -qq $buildDeps libxml2 binutils libsqlite3-0 sqlite3 manpages openssl bzip2 && \
     rm -rf /tmp/* /fluent-bit/include /fluent-bit/lib*
 
 COPY fluent-bit.conf /fluent-bit/etc/
 COPY parsers.conf /fluent-bit/etc/
-COPY start.sh /
-RUN ["chmod", "+x", "/start.sh"]
 
 CMD ["/fluent-bit/bin/fluent-bit", "-e", "/fluent-bit-kafka-output-plugin/out_kafka.so", "-c", "/fluent-bit/etc/fluent-bit.conf"]
