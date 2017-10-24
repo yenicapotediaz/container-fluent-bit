@@ -1,4 +1,4 @@
-image: $image_repo/$image_repo_org/$repo_name:$image_version_tag
+image: docker:latest
 
 services:
   - docker:dind
@@ -7,45 +7,25 @@ before_script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY #what are these? where do they come from?
 
-
-
 variables:
-  DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://localhost:2375
-  image_repo: quay.io
-  image_repo_org: samsung-cnct
-  repo_name: fluent-bit-container
-  robot_account: *******************noidea********* #do I need that for a quay container image?
-  image_version_tag: latest #for now, or what?
+  IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_JOB_ID
+  IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 
-stages:
-  - build
-  - test
-  - publish
-
-
-build:
+build-branch:
   stage: build
+  only:
+    - branches
+    - master
   script:
-    - docker build --force-rm --pull -t $IMAGE_DEVL_NAME
-    - docker push $IMAGE_DEVL_NAME
+  - docker build -t $IMAGE_DEVL_NAME
+  - docker push $IMAGE_DEVL_NAME
 
-build_unicorns:
+build-tag:
   stage: build
+  only:
+    - tags
   script:
-    - echo "The unicorn is the national animal of Scotland."
-
-test:
-  stage: test
-  script:
-    - docker pull $IMAGE_DEVL_NAME
-    - docker run $IMAGE_DEVL_NAME make test cover # does "make", "test" and "cover" actually mean anything? DROP AND COVER
-
-
-publish:
-  stage: publish
-  script:
-    - docker pull $IMAGE_DEVL_NAME
-    - docker tag $IMAGE_DEVL_NAME $IMAGE_PROD_NAME
-    - docker push $IMAGE_PROD_NAME
+  - docker build -t $IMAGE_PROD_NAME .
+  - docker push $IMAGE_PROD_NAME
