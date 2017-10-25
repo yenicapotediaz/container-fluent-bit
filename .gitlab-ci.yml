@@ -12,21 +12,43 @@ variables:
   DOCKER_DRIVER: overlay2
   IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_JOB_ID
   IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  registry: quay.io
+  repo_name: container-fluent-bit
+  QUAY_ORG: samsung_cnct #make secret
+  QUAY_USER: SECRET #guineveresaenger - secret
+  QUAY_ROBOT: SECRET # container-fluent-bit-robot - secret
+  QUAY_PASSWORD: SECRET # copypasta robot password upon generating.
 
+
+stages:
+  - build
+  - test
+  - publish
 
 build-branch:
   stage: build
   only:
     - branches
+  except:
     - master
   script:
   - docker build -t $IMAGE_DEVL_NAME .
   - docker push $IMAGE_DEVL_NAME
 
-build-tag:
+build-master:
   stage: build
   only:
-    - tags
+    - master
   script:
   - docker build -t $IMAGE_PROD_NAME .
   - docker push $IMAGE_PROD_NAME
+
+publish-master:
+  stage: publish
+  only:
+    - master
+  script:
+  - docker pull $IMAGE_PROD_NAME
+  - docker login ${registry} -u ${QUAY_USER}+${QUAY_ROBOT} -p ${QUAY_PASSWORD}
+  - docker tag ${IMAGE_PROD_NAME} ${registry}/${QUAY_ORG}/${repo_name}:gitlab_test
+  - docker push ${registry}/${QUAY_ORG}/${repo_name}:gitlab_test
