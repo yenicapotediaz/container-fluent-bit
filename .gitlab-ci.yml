@@ -5,7 +5,7 @@ services:
 
 before_script:
   - docker info
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY #what are these? where do they come from?
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 variables:
   DOCKER_HOST: tcp://localhost:2375
@@ -14,10 +14,10 @@ variables:
   IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   registry: quay.io
   repo_name: container-fluent-bit
-  QUAY_ORG: samsung_cnct #make secret
-  QUAY_USER: SECRET #guineveresaenger - secret
-  QUAY_ROBOT: SECRET # container-fluent-bit-robot - secret
-  QUAY_PASSWORD: SECRET # copypasta robot password upon generating.
+  QUAY_ORG: SECRET 
+  QUAY_USER: SECRET 
+  QUAY_ROBOT: SECRET 
+  QUAY_PASSWORD: SECRET
 
 
 stages:
