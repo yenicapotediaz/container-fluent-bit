@@ -49,6 +49,6 @@ publish-master:
     - master
   script:
   - docker pull $IMAGE_PROD_NAME
-  - docker login ${registry} -u ${QUAY_USER}+${QUAY_ROBOT} -p ${QUAY_PASSWORD}
+  - docker login ${registry} -u ${QUAY_ORG}+${QUAY_ROBOT} -p ${QUAY_PASSWORD}
   - docker tag ${IMAGE_PROD_NAME} ${registry}/${QUAY_ORG}/${repo_name}:gitlab_test
   - docker push ${registry}/${QUAY_ORG}/${repo_name}:gitlab_test
