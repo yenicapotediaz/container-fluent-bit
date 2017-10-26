@@ -13,7 +13,7 @@ variables:
   IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_JOB_ID
   IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   registry: quay.io
-  repo_name: container-fluent-bit
+  repo_name: fluent-bit-container
   QUAY_ORG: SECRET 
   QUAY_USER: SECRET 
   QUAY_ROBOT: SECRET 
