@@ -38,6 +38,7 @@ build-master:
   stage: build
   only:
     - master
+    - tags
   script:
   - docker build -t $IMAGE_PROD_NAME .
   - docker push $IMAGE_PROD_NAME
@@ -52,8 +53,8 @@ publish-master:
   script:
   - docker pull $IMAGE_PROD_NAME
   - docker login ${registry} -u ${quay_org}+${QUAY_ROBOT} -p ${QUAY_PASSWORD}
-  - docker tag ${IMAGE_PROD_NAME} ${registry}/${quay_org}/${repo_name}
-  - docker push ${registry}/${quay_org}/${repo_name}
+  - docker tag ${IMAGE_PROD_NAME} ${registry}/${quay_org}/${repo_name}:latest
+  - docker push ${registry}/${quay_org}/${repo_name}:latest
 
 publish-version-tag:
   stage: publish
