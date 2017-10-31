@@ -78,7 +78,7 @@ cleanup-branch-image:
     DOCKER_HOST: tcp://localhost:2375
     DOCKER_DRIVER: overlay2
     DOCKER_REGISTRY: $CI_REGISTRY
-    DOCKER_PROJECT: $CI_REGISTRY_IMAGE
+    DOCKER_PROJECT: $CI_PROJECT_PATH
     DOCKER_TAG: $CI_COMMIT_REF_NAME-$CI_JOB_ID
   only:
     - branches
@@ -88,5 +88,5 @@ cleanup-branch-image:
   allow_failure: true
   image: registry.cnct.io/venezia/docker-registry-curl:v0.1.0
   script:
-  - echo "Unicorns Are Deleting ${DOCKER_REGISTRY}/{DOCKER_PROJECT}/${DOCKER_TAG}"
+  - echo "Unicorns Are Deleting ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/${DOCKER_TAG}"
   - /entrypoint.sh
