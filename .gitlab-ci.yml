@@ -78,7 +78,7 @@ cleanup-branch-image:
     DOCKER_HOST: tcp://localhost:2375
     DOCKER_DRIVER: overlay2
     DOCKER_REGISTRY: $CI_REGISTRY
-    DOCKER_PROJECT: $CI_PROJECT_PATH
+    DOCKER_PROJECT: $CI_REGISTRY_IMAGE
     DOCKER_TAG: $CI_COMMIT_REF_NAME-$CI_JOB_ID
   only:
     - branches
