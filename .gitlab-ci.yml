@@ -76,5 +76,4 @@ cleanup-built-branches:
   script:
   - docker info
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker rm $IMAGE_DEVL_NAME
   - docker rmi $IMAGE_DEVL_NAME
