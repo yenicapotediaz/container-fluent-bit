@@ -86,7 +86,7 @@ cleanup-branch-image:
     - master
   when: always
   allow_failure: true
-  # image: registry.cnct.io/venezia/docker-registry-curl:v0.1.0
+  image: registry.cnct.io/venezia/docker-registry-curl:v0.1.0
   script:
   - echo "Unicorns Are Deleting ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/${DOCKER_TAG}"
   - sh entrypoint.sh
