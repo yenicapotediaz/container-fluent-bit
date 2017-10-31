@@ -68,17 +68,6 @@ publish-version-tag:
 
 cleanup-branch-image:
   stage: cleanup
-  only:
-    - branches
-  except:
-    - master
-  script:
-  - docker info
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker rmi $IMAGE_DEVL_NAME
-
-cleanup-branch-image:
-  stage: cleanup
   services:
     - docker:dind
   image: docker:latest
