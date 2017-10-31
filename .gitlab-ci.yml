@@ -44,8 +44,8 @@ build-master:
   - docker build -t $IMAGE_PROD_NAME .
   - docker push $IMAGE_PROD_NAME
 
-test:
-   stage: test
+# test:
+#    stage: test
 
 publish-master:
   stage: publish
