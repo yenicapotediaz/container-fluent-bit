@@ -10,7 +10,7 @@ before_script:
 variables:
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_DRIVER: overlay2
-  IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_JOB_ID
+  IMAGE_DEVL_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME-$CI_PIPELINE_ID
   IMAGE_PROD_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
   registry: quay.io
   image_name: fluent-bit-container
@@ -79,7 +79,7 @@ cleanup-branch-image:
     DOCKER_DRIVER: overlay2
     DOCKER_REGISTRY: $CI_REGISTRY
     DOCKER_PROJECT: $CI_PROJECT_PATH
-    DOCKER_TAG: $CI_COMMIT_REF_NAME-$CI_JOB_ID
+    DOCKER_TAG: $CI_COMMIT_REF_NAME-$CI_PIPELINE_ID
   only:
     - branches
   except:
