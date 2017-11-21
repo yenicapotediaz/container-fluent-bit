@@ -1,4 +1,6 @@
 # container-fluent-bit
+[![pipeline status](https://git.cnct.io/common-tools/samsung-cnct_container-fluent-bit/badges/master/pipeline.svg)](https://git.cnct.io/common-tools/samsung-cnct_container-fluent-bit/commits/master)
+
 "[Fluent Bit](http://fluentbit.io/) is an open source and multi-platform Log Forwarder which allows you to collect data/logs from different sources, unify and send them to multiple destinations."
 
 The [container-fluent-bit](https://github.com/samsung-cnct/container-fluent-bit) repo contains a Dockerfile (and Jenkinsfile) to build (and test) the [fluent-bit](https://quay.io/repository/samsung_cnct/fluent-bit-container) container.
