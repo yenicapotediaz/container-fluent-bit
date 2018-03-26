@@ -1,6 +1,7 @@
-FROM ubuntu:16.04
+FROM ubuntu:17.10
 MAINTAINER Leah Petersen <leahnpetersen@gmail.com>
-LABEL Description="Fluent Bit Docker image" Vendor="Samsung CNCT" Version="0.1"
+MAINTAINER Jim Conner <snafu.x@gmail.com>
+LABEL Description="Fluent Bit Docker image" Vendor="Samsung CNCT" Version="0.2"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -28,7 +29,7 @@ RUN buildDeps='build-essential \
         wget' && \
     apt-get -qq update && \
     apt-get install -y -qq $buildDeps ca-certificates golang sudo --no-install-recommends && \
-    apt-get install -y -qq --reinstall lsb-base lsb-release && \
+    apt-get install -y -qq --reinstall lsb-base lsb-release systemd && \
     wget -O "/tmp/fluent-bit-$FLB_VERSION-dev.zip" "https://github.com/fluent/fluent-bit/archive/v$FLB_VERSION.zip" && \
     cd /tmp && \
     unzip "fluent-bit-$FLB_VERSION-dev.zip" && \
