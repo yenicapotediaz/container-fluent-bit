@@ -34,7 +34,7 @@ RUN buildDeps='build-essential \
     cd /tmp && \
     unzip "fluent-bit-$FLB_VERSION-dev.zip" && \
     cd "fluent-bit-$FLB_VERSION/build/" && \
-    cmake -DFLB_JEMALLOC=on -DFLB_BUFFERING=On -DCMAKE_INSTALL_PREFIX=/fluent-bit/ .. && \
+    cmake -DFLB_JEMALLOC=On -DFLB_BUFFERING=On -DCMAKE_INSTALL_PREFIX=/fluent-bit/ .. && \
     make && \
     make install && \
     cd / && \
