@@ -1,4 +1,4 @@
-FROM gcr.io/google-containers/debian-base-amd64:0.1
+FROM gcr.io/google-containers/debian-base-amd64:0.3
 
 LABEL Description="Fluent Bit Docker image" \
       Vendor="Samsung CNCT" \
