@@ -1,9 +1,7 @@
-FROM gcr.io/google-containers/debian-base-amd64:0.3
+FROM ubuntu:18.04
 
-LABEL Description="Fluent Bit Docker image" \
-      Vendor="Samsung CNCT" \
-      Version="0.4" \
-      maintainer="Leah Petersen <leahnpetersen@gmail.com>" \
+LABEL description="Fluent Bit Docker image" \
+      vendor="Samsung CNCT" \
       maintainer="Jim Conner <snafu.x@gmail.com>"
 
 ENV FLB_MAJOR 0
@@ -15,6 +13,7 @@ ENV FLB_TARBALL http://github.com/fluent/fluent-bit/archive/v$FLB_VERSION.zip
 
 RUN mkdir -p /fluent-bit/bin /fluent-bit/etc /fluent-bit/log \
     && apt-get -qq update \
+    && apt-get -qq clean \
     && apt-get install -y -qq \
        build-essential \
        cmake \
@@ -39,6 +38,7 @@ RUN mkdir -p /fluent-bit/bin /fluent-bit/etc /fluent-bit/log \
        openssl \
        manpages \
     && apt-get install -y -qq --no-install-recommends ca-certificates \
+    && apt-get -qq clean \
     && rm -rf /tmp/*
 
 # Configuration files
